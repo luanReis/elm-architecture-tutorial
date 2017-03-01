@@ -22,12 +22,13 @@ main =
 type alias Model =
   { topic : String
   , gifUrl : String
+  , errorMessage: String
   }
 
 
 init : String -> (Model, Cmd Msg)
 init topic =
-  ( Model topic "waiting.gif"
+  ( Model topic "waiting.gif" ""
   , getRandomGif topic
   )
 
@@ -48,10 +49,10 @@ update msg model =
       (model, getRandomGif model.topic)
 
     NewGif (Ok newUrl) ->
-      (Model model.topic newUrl, Cmd.none)
+      (Model model.topic newUrl "", Cmd.none)
 
     NewGif (Err _) ->
-      (model, Cmd.none)
+      ({model | errorMessage = "Ops! The GIF could not be fetched."}, Cmd.none)
 
 
 
@@ -63,6 +64,7 @@ view model =
   div []
     [ h2 [] [text model.topic]
     , button [ onClick MorePlease ] [ text "More Please!" ]
+    , div [ style [("color", "red")] ] [ text model.errorMessage ]
     , br [] []
     , img [src model.gifUrl] []
     ]
