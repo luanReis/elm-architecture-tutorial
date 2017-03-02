@@ -67,7 +67,10 @@ view : Model -> Html Msg
 view model =
   div []
     [ h2 [] [text model.topic]
-    , input [ type_ "text", placeholder "Topic", onInput Topic ] []
+    , select [ onInput Topic ] [ option [ value "cats" ] [ text "cats" ]
+                               , option [ value "dogs" ] [ text "dogs" ]
+                               , option [ value "food" ] [ text "food" ]
+                               ]
     , button [ onClick MorePlease ] [ text "More Please!" ]
     , div [ style [("color", "red")] ] [ text model.errorMessage ]
     , br [] []
