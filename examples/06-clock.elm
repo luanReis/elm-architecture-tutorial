@@ -21,7 +21,7 @@ main =
 
 type alias Model =
   { time : Time
-  , stop : Bool
+  , paused : Bool
   }
 
 
@@ -36,7 +36,8 @@ init =
 
 type Msg
   = Tick Time
-  | Stop
+  | Pause
+  | Resume
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -45,8 +46,11 @@ update msg model =
     Tick newTime ->
       ({model | time = newTime}, Cmd.none)
 
-    Stop ->
-      ({model | stop = True}, Cmd.none)
+    Pause ->
+      ({model | paused = True}, Cmd.none)
+
+    Resume ->
+      ({model | paused = False}, Cmd.none)
 
 
 
@@ -55,7 +59,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  if model.stop then
+  if model.paused then
     Sub.none
   else
     Time.every second Tick
@@ -81,5 +85,6 @@ view model =
                  [ circle [ cx "50", cy "50", r "45", fill "#0B79CE" ] []
                  , line [ x1 "50", y1 "50", x2 handX, y2 handY, stroke "#023963" ] []
                  ]
-           , button [ onClick Stop ] [ Html.text "Stop" ]
+           , button [ onClick Pause ] [ Html.text "Pause" ]
+           , button [ onClick Resume ] [ Html.text "Resume" ]
            ]
